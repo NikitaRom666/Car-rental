@@ -1,0 +1,35 @@
+[
+  {
+    "Id": "33dbc243-e27a-4745-84fb-35591eb6508e",
+    "Model": "Toyota Corolla",
+    "Category": 0,
+    "PricePerDay": 50,
+    "IsAvailable": true,
+    "LocationId": "17311a5f-9881-4687-8051-6c6d69de4e6f",
+    "LicensePlate": "NY-001",
+    "ManufacturingYear": 2023,
+    "CreatedAt": "2026-04-29T10:42:43.4055798Z"
+  },
+  {
+    "Id": "effaf283-3555-4424-9171-3713c4f8fbc1",
+    "Model": "BMW 3 Series",
+    "Category": 1,
+    "PricePerDay": 100,
+    "IsAvailable": true,
+    "LocationId": "17311a5f-9881-4687-8051-6c6d69de4e6f",
+    "LicensePlate": "NY-002",
+    "ManufacturingYear": 2023,
+    "CreatedAt": "2026-04-29T10:42:43.4056181Z"
+  },
+  {
+    "Id": "6c34493e-e96f-48e2-9899-193a7826ae1e",
+    "Model": "Mercedes-Benz S Class",
+    "Category": 2,
+    "PricePerDay": 200,
+    "IsAvailable": true,
+    "LocationId": "17311a5f-9881-4687-8051-6c6d69de4e6f",
+    "LicensePlate": "NY-003",
+    "ManufacturingYear": 2023,
+    "CreatedAt": "2026-04-29T10:42:43.4056184Z"
+  }
+]

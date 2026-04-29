@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "650e8400-e29b-41d4-a716-446655440000",
+    "Name": "John Doe",
+    "Email": "john.doe@email.com",
+    "PhoneNumber": "555-0100",
+    "DriverLicenseNumber": "NY12345678",
+    "CreatedAt": "2024-01-10T08:00:00Z"
+  },
+  {
+    "Id": "650e8400-e29b-41d4-a716-446655440001",
+    "Name": "Jane Smith",
+    "Email": "jane.smith@email.com",
+    "PhoneNumber": "555-0101",
+    "DriverLicenseNumber": "NY87654321",
+    "CreatedAt": "2024-01-12T09:15:00Z"
+  },
+  {
+    "Id": "650e8400-e29b-41d4-a716-446655440002",
+    "Name": "Michael Johnson",
+    "Email": "michael.j@email.com",
+    "PhoneNumber": "555-0102",
+    "DriverLicenseNumber": "NY11223344",
+    "CreatedAt": "2024-01-14T14:30:00Z"
+  }
+]

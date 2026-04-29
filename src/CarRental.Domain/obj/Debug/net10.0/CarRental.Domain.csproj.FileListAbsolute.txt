@@ -1,0 +1,11 @@
+C:\Projects\CarRental\src\CarRental.Domain\bin\Debug\net10.0\CarRental.Domain.deps.json
+C:\Projects\CarRental\src\CarRental.Domain\bin\Debug\net10.0\CarRental.Domain.dll
+C:\Projects\CarRental\src\CarRental.Domain\bin\Debug\net10.0\CarRental.Domain.pdb
+C:\Projects\CarRental\src\CarRental.Domain\obj\Debug\net10.0\CarRental.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\CarRental\src\CarRental.Domain\obj\Debug\net10.0\CarRental.Domain.AssemblyInfoInputs.cache
+C:\Projects\CarRental\src\CarRental.Domain\obj\Debug\net10.0\CarRental.Domain.AssemblyInfo.cs
+C:\Projects\CarRental\src\CarRental.Domain\obj\Debug\net10.0\CarRental.Domain.csproj.CoreCompileInputs.cache
+C:\Projects\CarRental\src\CarRental.Domain\obj\Debug\net10.0\CarRental.Domain.dll
+C:\Projects\CarRental\src\CarRental.Domain\obj\Debug\net10.0\refint\CarRental.Domain.dll
+C:\Projects\CarRental\src\CarRental.Domain\obj\Debug\net10.0\CarRental.Domain.pdb
+C:\Projects\CarRental\src\CarRental.Domain\obj\Debug\net10.0\ref\CarRental.Domain.dll

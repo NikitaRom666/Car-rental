@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "750e8400-e29b-41d4-a716-446655440000",
+    "Name": "Downtown Branch",
+    "Address": "123 Main Street",
+    "City": "New York",
+    "PostalCode": "10001",
+    "CreatedAt": "2024-01-01T00:00:00Z"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "pOsOUN7b9E8=",
+  "success": true,
+  "projectFilePath": "C:\\Projects\\CarRental\\src\\CarRental.Console\\CarRental.Console.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Student 01-28\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\6.0.0\\microsoft.extensions.dependencyinjection.6.0.0.nupkg.sha512",
+    "C:\\Users\\Student 01-28\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
