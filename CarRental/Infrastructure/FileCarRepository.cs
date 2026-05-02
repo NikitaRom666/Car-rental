@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using CarRental.Domain;
@@ -89,6 +90,7 @@ namespace CarRental.Infrastructure
             }
             catch
             {
+                Trace.WriteLine($"Failed to load cars from {_filePath}");
                 _cars = new List<Car>();
             }
         }
@@ -105,7 +107,7 @@ namespace CarRental.Infrastructure
             }
             catch
             {
-                // Демо-варіант: помилку не кидаємо вгору, щоб консоль не падала.
+                Trace.WriteLine($"Failed to save cars to {_filePath}");
             }
         }
 

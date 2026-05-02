@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using CarRental.Domain;
@@ -94,6 +95,7 @@ namespace CarRental.Infrastructure
             }
             catch
             {
+                Trace.WriteLine($"Failed to load bookings from {_filePath}");
                 _bookings = new List<Booking>();
             }
         }
@@ -110,7 +112,7 @@ namespace CarRental.Infrastructure
             }
             catch
             {
-                // Демо-варіант: помилку не кидаємо вгору, щоб консоль не падала.
+                Trace.WriteLine($"Failed to save bookings to {_filePath}");
             }
         }
 
