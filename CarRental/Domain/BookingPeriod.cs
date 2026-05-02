@@ -7,6 +7,7 @@ namespace CarRental.Domain
     {
         public DateOnly Start { get; }
         public DateOnly End { get; }
+        public int DurationDays => End.DayNumber - Start.DayNumber;
 
         public BookingPeriod(DateOnly start, DateOnly end)
         {
@@ -20,6 +21,9 @@ namespace CarRental.Domain
 
         public bool Overlaps(BookingPeriod other)
         {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
             return Start < other.End && End > other.Start;
         }
     }

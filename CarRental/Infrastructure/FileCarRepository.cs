@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CarRental.Domain;
 
 namespace CarRental.Infrastructure
@@ -22,16 +24,10 @@ namespace CarRental.Infrastructure
                 ? System.IO.Path.GetFullPath(System.IO.Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Infrastructure", "cars.json"))
                 : filePath;
 
-            try
-            {
-                LoadAsync().Wait();
-            }
-            catch
-            {
-                _cars = new List<Car>();
-            }
-            // Якщо після завантаження список порожній — ініціалізуємо дефолтними авто
-            if (_cars == null || _cars.Count == 0)
+            _cars = new List<Car>();
+            LoadAsync().GetAwaiter().GetResult();
+
+            if (_cars.Count == 0)
             {
                 _cars = new List<Car>
                 {
@@ -39,44 +35,40 @@ namespace CarRental.Infrastructure
                     new Car(Guid.NewGuid(), "VW Passat", VehicleCategory.Standard, AvailabilityStatus.Available),
                     new Car(Guid.NewGuid(), "BMW X5", VehicleCategory.SUV, AvailabilityStatus.Available)
                 };
-                SaveAsync().Wait();
+                SaveAsync().GetAwaiter().GetResult();
             }
         }
 
-        public Car GetById(Guid id) => _cars.FirstOrDefault(c => c.Id == id);
+        public Car? GetById(Guid id) => _cars.FirstOrDefault(car => car.Id == id);
 
         public IEnumerable<Car> GetAll() => _cars;
 
+        public void Add(Car car)
+        {
+            if (car == null)
+                throw new ArgumentNullException(nameof(car));
+            if (_cars.Any(existing => existing.Id == car.Id))
+                throw new InvalidOperationException("Авто з таким ID вже існує");
+
+            _cars.Add(car);
+            SaveAsync().GetAwaiter().GetResult();
+        }
+
         public void Update(Car car)
         {
-            var idx = _cars.FindIndex(c => c.Id == car.Id);
-            if (idx >= 0)
-                _cars[idx] = car;
-            SaveAsync().Wait();
+            if (car == null)
+                throw new ArgumentNullException(nameof(car));
+
+            var index = _cars.FindIndex(existing => existing.Id == car.Id);
+            if (index >= 0)
+                _cars[index] = car;
+            else
+                _cars.Add(car);
+
+            SaveAsync().GetAwaiter().GetResult();
         }
 
-        // Асинхронний пошук авто
-        public async System.Threading.Tasks.Task<Car> GetByIdAsync(Guid id)
-        {
-            await LoadAsync();
-            return _cars.FirstOrDefault(c => c.Id == id);
-        }
-
-        // Збереження у файл
-        public async System.Threading.Tasks.Task SaveAsync()
-        {
-            try
-            {
-                EnsureDirectory();
-                var storage = _cars.Select(ToStorageModel).ToList();
-                var json = System.Text.Json.JsonSerializer.Serialize(storage);
-                await System.IO.File.WriteAllTextAsync(_filePath, json);
-            }
-            catch { /* ignore */ }
-        }
-
-        // Завантаження з файлу
-        public async System.Threading.Tasks.Task LoadAsync()
+        public async Task LoadAsync(CancellationToken cancellationToken = default)
         {
             EnsureDirectory();
             if (!System.IO.File.Exists(_filePath))
@@ -84,15 +76,36 @@ namespace CarRental.Infrastructure
                 _cars = new List<Car>();
                 return;
             }
+
             try
             {
-                var json = await System.IO.File.ReadAllTextAsync(_filePath);
-                var storage = System.Text.Json.JsonSerializer.Deserialize<List<CarStorageModel>>(json) ?? new List<CarStorageModel>();
-                _cars = storage.Select(FromStorageModel).ToList();
+                await using var stream = System.IO.File.OpenRead(_filePath);
+                var storage = await System.Text.Json.JsonSerializer.DeserializeAsync<List<CarStorageModel>>(stream, cancellationToken: cancellationToken) ?? new List<CarStorageModel>();
+                _cars = storage
+                    .Where(item => item != null)
+                    .GroupBy(item => item.Id)
+                    .Select(group => FromStorageModel(group.First()))
+                    .ToList();
             }
             catch
             {
                 _cars = new List<Car>();
+            }
+        }
+
+        public async Task SaveAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                EnsureDirectory();
+                var storage = _cars.Select(ToStorageModel).ToList();
+                var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+                await using var stream = System.IO.File.Create(_filePath);
+                await System.Text.Json.JsonSerializer.SerializeAsync(stream, storage, options, cancellationToken);
+            }
+            catch
+            {
+                // Демо-варіант: помилку не кидаємо вгору, щоб консоль не падала.
             }
         }
 
@@ -122,7 +135,7 @@ namespace CarRental.Infrastructure
         private sealed class CarStorageModel
         {
             public Guid Id { get; set; }
-            public string Model { get; set; }
+            public string Model { get; set; } = string.Empty;
             public VehicleCategory Category { get; set; }
             public AvailabilityStatus AvailabilityStatus { get; set; }
         }

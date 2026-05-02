@@ -2,6 +2,7 @@ using System;
 using CarRental.Domain;
 using CarRental.Application.Dto;
 using System.Linq;
+using CarRental.Application.Strategies;
 
 namespace CarRental.Application
 {
@@ -10,19 +11,26 @@ namespace CarRental.Application
     {
         private readonly ICarRepository _carRepo;
         private readonly IBookingRepository _bookingRepo;
+        private readonly BookingPricingStrategyFactory _pricingStrategyFactory;
 
         public BookingService(ICarRepository carRepo, IBookingRepository bookingRepo)
+            : this(carRepo, bookingRepo, new BookingPricingStrategyFactory())
+        {
+        }
+
+        public BookingService(ICarRepository carRepo, IBookingRepository bookingRepo, BookingPricingStrategyFactory pricingStrategyFactory)
         {
             _carRepo = carRepo;
             _bookingRepo = bookingRepo;
+            _pricingStrategyFactory = pricingStrategyFactory;
         }
 
-        public BookingResultDto CreateBooking(BookingRequestDto request)
+        public BookingResultDto CreateBooking(BookingRequestDto? request)
         {
             return CreateBookingAsync(request).GetAwaiter().GetResult();
         }
 
-        public async System.Threading.Tasks.Task<BookingResultDto> CreateBookingAsync(BookingRequestDto request)
+        public async System.Threading.Tasks.Task<BookingResultDto> CreateBookingAsync(BookingRequestDto? request)
         {
             // Перевірка на null
             if (request == null)
@@ -31,6 +39,8 @@ namespace CarRental.Application
                 return Fail("ID авто не задано");
             if (request.CustomerId == Guid.Empty)
                 return Fail("ID клієнта не задано");
+            if (string.IsNullOrWhiteSpace(request.CustomerName))
+                return Fail("Ім'я клієнта не задано");
 
             // Перевірка дат (DateOnly)
             if (request.Start == default || request.End == default)
@@ -57,15 +67,42 @@ namespace CarRental.Application
 
             // Створюємо бронювання
             var period = new BookingPeriod(startDate, endDate);
-            var customer = new Customer(request.CustomerId, "Test");
-            var days = endDate.DayNumber - startDate.DayNumber;
-            var price = days * 100m;
+            var customer = new Customer(request.CustomerId, request.CustomerName);
+            var strategy = _pricingStrategyFactory.GetStrategy(car.Category);
+            var price = strategy.CalculatePrice(car, period);
             var booking = new Booking(Guid.NewGuid(), car, customer, period, price);
-            await System.Threading.Tasks.Task.Run(() => _bookingRepo.Add(booking));
-            car.SetAvailability(AvailabilityStatus.Booked);
-            await System.Threading.Tasks.Task.Run(() => _carRepo.Update(car));
+            _bookingRepo.Add(booking);
+            car.MarkBooked();
+            _carRepo.Update(car);
 
             return Success(booking.Id);
+        }
+
+        public async System.Threading.Tasks.Task<BookingResultDto> CancelBookingAsync(Guid bookingId)
+        {
+            if (bookingId == Guid.Empty)
+                return Fail("ID бронювання не задано");
+
+            var booking = _bookingRepo.GetById(bookingId);
+            if (booking == null)
+                return Fail("Бронювання не знайдено");
+            if (!booking.IsActive)
+                return Fail("Бронювання вже скасоване");
+            if (booking.Period.Start <= DateOnly.FromDateTime(DateTime.Today))
+                return Fail("Не можна скасувати бронювання, яке вже почалося");
+
+            booking.Cancel();
+            booking.Car.MarkAvailable();
+            _bookingRepo.Update(booking);
+            _carRepo.Update(booking.Car);
+            await System.Threading.Tasks.Task.CompletedTask;
+
+            return new BookingResultDto
+            {
+                Success = true,
+                Message = "Бронювання скасовано",
+                BookingId = booking.Id
+            };
         }
 
         private BookingResultDto Fail(string message) => new() { Success = false, Message = message };

@@ -1,5 +1,25 @@
 # Діаграма послідовності
 
-![Діаграма послідовності](Note%20Management%20Patterns-2026-05-02-074802.png)
+```mermaid
+sequenceDiagram
+actor Користувач
+participant ConsoleUI
+participant BookingService
+participant BookingPricingStrategyFactory
+participant FileCarRepository
+participant FileBookingRepository
 
-Це сценарій бронювання: користувач обирає авто, система перевіряє доступність і або створює бронювання, або показує помилку.
+Користувач->>ConsoleUI: Обирає авто і вводить дати
+ConsoleUI->>FileCarRepository: LoadAsync()
+ConsoleUI->>FileBookingRepository: LoadAsync()
+ConsoleUI->>BookingService: CreateBookingAsync(request)
+BookingService->>FileCarRepository: GetById(carId)
+BookingService->>FileBookingRepository: GetOverlappingAsync(carId, start, end)
+BookingService->>BookingPricingStrategyFactory: GetStrategy(category)
+BookingService->>FileBookingRepository: Add(booking)
+BookingService->>FileCarRepository: Update(car)
+BookingService-->>ConsoleUI: BookingResultDto
+ConsoleUI-->>Користувач: Показати результат
+```
+
+Сценарій показує, як UI не містить бізнес-логіки, а лише збирає ввід і віддає його в сервіс.
