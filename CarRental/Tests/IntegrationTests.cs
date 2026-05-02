@@ -69,6 +69,7 @@ namespace CarRental.Tests
             {
                 CarId = car.Id,
                 CustomerId = Guid.NewGuid(),
+                CustomerName = "Іван Петренко",
                 Start = new DateTime(2026, 5, 10),
                 End = new DateTime(2026, 5, 12)
             };
