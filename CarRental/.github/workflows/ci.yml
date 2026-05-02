@@ -23,4 +23,4 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Test
-        run: dotnet test --no-build --collect:"XPlat Code Coverage"
+        run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover

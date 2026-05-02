@@ -28,3 +28,6 @@ dotnet test
 - `docs/iteration-1.md`
 - `docs/iteration-2-plan.md`
 - `docs/iteration-2.md`
+- `docs/test-strategy.md`
+- `docs/test-matrix.md`
+- `docs/iteration-3.md`
