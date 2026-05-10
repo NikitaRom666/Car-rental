@@ -1,39 +1,37 @@
 # Test Strategy
 
-## Критичні сценарії
-- створення бронювання з перевіркою доступності
-- перетин бронювань для одного авто
-- скасування бронювання і повернення авто в доступний стан
-- збереження і повторне завантаження стану з JSON
-- робота меню запитів після відновлення даних
+## Critical Scenarios
+- Booking creation with availability check
+- Date overlap detection for same vehicle
+- Booking cancellation & car state reset
+- JSON save/load/reload cycle
+- Analytics queries after persistence
 
-## Найважче тестувати
-- файловий I/O, бо там є зовнішній стан і можливі збої
-- старт програми, бо там є поєднання репозиторіїв і меню
-- негативні сценарії з пошкодженими файлами, бо треба окремі тимчасові файли
+## Test Organization
 
-## Де потрібні mocks
-- у сервісах Application, де треба відокремити бізнес-логіку від репозиторіїв
-- у тестах Strategy і BookingQueryService, коли треба підкласти дані без файлів
+**Unit Tests (Moq):**
+- BookingService with mocked repositories
+- Domain entity invariants
+- Strategy pattern pricing
+- LINQ query logic
 
-## Де потрібна реальна інтеграція
-- у репозиторіях з JSON
-- у сценаріях save/load/reload
-- у перевірці того, що бізнес-операція працює після перезапуску
+**Integration Tests (Real I/O):**
+- FileCarRepository: save/load cycle
+- FileBookingRepository: persistence verification
+- Fault scenarios: missing files, corrupted JSON, read-only files
+- Use temp files with cleanup (Path.GetTempPath() + GUID)
 
-## Ризики перед захистом
-- пошкоджений JSON
-- повторне скасування бронювання
-- неправильне відновлення стану після декількох змін
-- регресії в інваріантах сутностей
+## Risks & Mitigations
 
-## Конкретні тестові заходи та метрики
-- Мішені: не менше 20 unit-тестів і не менше 8 integration-тестів; загальне покриття — прагнути >70% критичного коду.
-- Негативні I/O сценарії: додати 1–2 integration-тести, які симулюють відсутній файл та пошкоджений JSON і перевіряють, що репозиторій не кидає необроблених виключень і повертає пустий набір даних.
-- Fault-injection: використовувати тимчасові файли у тестах (`Path.GetTempPath()` + GUID) та очищати після виконання.
-- CI: запуск `dotnet test` з `/p:CollectCoverage=true`; помилка при падінні тестів або при падінні coverage threshold (налаштувати як quality gate, якщо можливе).
+| Risk | Mitigation |
+|------|------------|
+| Corrupted JSON | PersistenceException with specific error type |
+| Double cancellation | BookingStatus guards in Domain |
+| File access denied | UnauthorizedAccessException handler |
+| State inconsistency | Integration tests verify save/load |
 
-## Рекомендації щодо організації тестів
-- Unit: із використанням `Moq` для `ICarRepository`/`IBookingRepository` у тестах сервісів.
-- Integration: реальні `File*Repository` із тимчасовою директорією; перевіряти save/load та поведінку при корупції файлу.
-- Test matrix: зіставити кожен ключовий use case з принаймні одним unit- і одним integration-тестом.
+## Quality Metrics
+- 20+ unit tests (target: PASS)
+- 8+ integration tests (target: PASS)
+- Coverage: 70%+ critical paths
+- CI gate: Build + Test + Coverage check

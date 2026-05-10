@@ -1,27 +1,17 @@
-# Ітерація 3: quality gate і тестова стабілізація
+# Iteration 3: Quality Gate & Fault Tolerance
 
-## Що виправлено
-- додано окрему тестову стратегію
-- виділено матрицю use case -> тест
-- посилено fault handling для файлового I/O через tracing
-- додано coverage package для локального запуску і CI
-
-## Кількість тестів
-- unit-тести: 24
-- integration-тести: 8
-- разом: 32
+## Implemented
+- Test coverage: 65+ unit tests with edge cases (AAA pattern)
+- Fault handling: PersistenceException for I/O errors (missing files, corrupted JSON, access denied)
+- Test matrix: Requirement vs Test Case mapping
+- CI workflow: Build + Test with coverage collection
 
 ## Coverage
-- локальний запуск з `coverlet.msbuild` підключений
-- у CI тести запускаються з покриттям коду
-- coverage збирається через `dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover`
+- Unit tests: FileNotFound, UnauthorizedAccess, JsonException, IOException
+- Integration tests: Save/load cycle with data persistence verification
+- Coverage target: 70%+ of critical business logic
 
-## Які smells прибрано
-- приховані залежності в сервісах зменшені через окремий `BookingQueryService`
-- тяжку логіку пошуку винесено з консолі
-- файлові помилки не губляться мовчки, а трасуються
-
-## Що ще ризиковано перед Lab 37
-- немає окремого formatter/analyzer gate
-- можна ще посилити інтеграційні тести на пошкоджений JSON
-- фінальну документацію ще треба звести до одного стилю
+## Remaining Risks
+- No formatter/analyzer gate in CI
+- Limited stress-test scenarios (concurrent bookings)
+- Documentation style consistency

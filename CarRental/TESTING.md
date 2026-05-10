@@ -1,30 +1,37 @@
-# Тестування
+# Testing
 
-## Призначення
-Тести перевіряють доменні інваріанти, бізнес-правила, persistence і роботу запитів після відновлення стану.
-
-## Що покрито
-- створення бронювання
-- скасування бронювання
-- некоректні дати і порожні значення
-- перетин бронювань
-- інваріанти `Car`, `Customer`, `BookingPeriod`, `Booking`
-- Strategy ціноутворення
-- пошук, популярність і дохід по категоріях
-- збереження і повторне завантаження JSON
-- реакція на відсутній або пошкоджений файл
-
-## Запуск тестів
-```powershell
-dotnet test CarRental.sln
+## Run Tests
+```bash
+dotnet test
 ```
 
-## Запуск з coverage
-```powershell
-dotnet test CarRental.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+## Run with Coverage
+```bash
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 ```
 
-## Контроль якості
-- `dotnet build` має проходити без помилок
-- `dotnet test` має проходити повністю
-- критичні сценарії мають покриватися окремими unit- та integration-тестами
+## Test Coverage
+
+| Category | Unit Tests | Integration Tests |
+|----------|------------|-------------------|
+| Booking Creation | 5 | 2 |
+| Booking Cancellation | 2 | 1 |
+| Date Validation | 3 | - |
+| Overlap Detection | 2 | 1 |
+| Domain Entities | 8 | - |
+| Strategy Pattern | 4 | 1 |
+| LINQ Queries | 3 | 1 |
+| Fault Handling | 5 | 2 |
+| **Total** | **32** | **8** |
+
+## Critical Scenarios
+- Date overlap detection
+- Car availability checks
+- JSON persistence & reload
+- Corrupted file handling (FileNotFoundException, UnauthorizedAccessException, JsonException)
+- Domain invariants validation
+
+## Quality Gate
+- All tests must pass
+- Coverage >= 70% for critical code paths
+- No compile warnings

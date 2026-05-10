@@ -1,43 +1,21 @@
-# Ітерація 1: Базова архітектура та перший вертикальний зріз
+# Iteration 1: Domain Architecture & Vertical Slice
 
-## Що вже працює
-- є доменна модель для авто, клієнта, бронювання і періоду
-- є сервіс бронювання з перевіркою доступності
-- є консольний сценарій, який проходить від вводу до результату
-- є файлові репозиторії для авто і бронювань
-- є базові тести для головного сценарію
+## Implemented
+- Domain entities: Car, Booking, Customer, BookingPeriod
+- Interfaces: ICarRepository, IBookingRepository
+- Application service: BookingService (availability + overlap checks)
+- Infrastructure: FileCarRepository, FileBookingRepository (JSON persistence)
+- Console UI: One vertical slice (select car → validate → create booking → persist)
+- Tests: Basic unit tests for booking creation
+- CI: GitHub Actions workflow (build + test)
 
-## Артефакти в репозиторії
-- [docs/vision.md](vision.md)
-- [docs/backlog.md](backlog.md)
-- [docs/class-diagram.md](class-diagram.md)
-- [docs/sequence-diagram.md](sequence-diagram.md)
-- [README.md](../README.md)
-- [.github/workflows/ci.yml](../.github/workflows/ci.yml)
+## Known Risks
+- JSON persistence without corruption handling
+- No detailed repository contract documentation
+- Limited test coverage
 
-## Що буде розвиватися далі
-- сценарій бронювання з новою логікою ціни
-- робота з клієнтами без заглушки
-- збереження і відновлення даних
-
-## Ризики і невизначеності
-- зараз збереження через JSON ще просте і без складного відновлення
-- частина даних поки що демо, без повної предметної моделі
-- у наступній ітерації може знадобитися корекція інтерфейсів репозиторіїв
-
-## Що підготовлено під розширення
-- `BookingService`
-- `BookingValidator`
-- `ICarRepository`
-- `IBookingRepository`
-- `Car`
-- `Booking`
-
-## Очікувані розширення (що додати у наступних ітераціях)
-- Детальні DTO для взаємодії між `ConsoleUI` та `Application` (з описом полів і валідацією)
-- Розширені сценарії аналітики (LINQ-запити) і `BookingQueryService`
-- Поліпшені репозиторії: явний `IDataStore<T>` і тестований `JsonDataStore<T>` з контрактом `SaveAsync`/`LoadAsync`
-- Додаткові Strategy для ціноутворення і фабрика стратегій (`BookingPricingStrategyFactory`)
-- Покриття тестами: принаймні 20 unit-тестів і 8 integration-тестів
-- CI: quality gate (запуск тестів з покриттям), optional analyzer/formatter step
-- Документація: приклади CLI сценаріїв, DEMO.md і фінальний self-audit
+## Next Steps
+- Add pricing strategies (Lab 35)
+- Add LINQ queries for analytics (Lab 35)
+- Expand test suite to 20+ unit + 8+ integration (Lab 36)
+- Add fault tolerance (Lab 36)

@@ -1,21 +1,21 @@
-# Ітерація 2: бізнес-логіка, persistence і запити
+# Iteration 2: LINQ, Pricing Strategies & Fault Handling
 
-## Що вже працює
-- бронювання авто з перевіркою доступності і перетинів
-- скасування бронювання
-- відновлення стану з JSON при старті
-- меню запитів з пошуком і аналітикою
-- Strategy для розрахунку ціни
+## Implemented
+- 3+ use cases: booking creation, cancellation, analytics queries
+- Strategy pattern: Economy/Standard/SUV pricing strategies
+- LINQ queries for analytics aggregation
+- BookingQueryService: Analytics layer
+- Async I/O: LoadAsync/SaveAsync in repositories
+- Test coverage: 20+ unit tests, 8+ integration tests
 
-## Які use cases готові
-1. створення бронювання
-2. скасування бронювання
-3. пошук і перегляд активних бронювань / аналітика по авто
+## Technical Decisions
+- Strategy pattern for pricing
+- Repository pattern with async I/O
+- Domain encapsulates all business rules
 
-## Аналітика (новий сценарій)
-- Сценарій: Користувач вибирає "Аналітика" в меню і бачить зведення по періодах: кількість бронювань, дохід та популярність моделей/категорій.
-- Вимоги: реалізувати через LINQ у `BookingQueryService`, повернути DTO з полями `TotalBookings`, `TotalRevenue`, `TopCars`, `TopCategories`.
-- Тестування: unit-тести на коректні агрегації та integration-тести після відновлення стану з JSON.
+## Risks
+- Corrupted JSON handling
+- Limited edge-case coverage
 
 ## Які класи і контракти змінилися
 - `BookingService`
