@@ -82,6 +82,31 @@ namespace CarRental.Application
                 .ToDictionary(group => group.Key, group => group.Sum(booking => booking.Price));
         }
 
+        public decimal GetTotalRevenueByDateRange(DateOnly start, DateOnly end)
+        {
+            return _bookingRepository.GetAll()
+                .Where(booking => booking.Status == BookingStatus.Active 
+                    && booking.Period.Start >= start 
+                    && booking.Period.End <= end)
+                .Sum(booking => booking.Price);
+        }
+
+        public IReadOnlyList<CarSummaryDto> GetCarsBookedByCategory(VehicleCategory category)
+        {
+            return _carRepository.GetAll()
+                .Where(car => car.Category == category && car.AvailabilityStatus == AvailabilityStatus.Unavailable)
+                .OrderBy(car => car.Model)
+                .Select(car => new CarSummaryDto
+                {
+                    Id = car.Id,
+                    Model = car.Model,
+                    Category = car.Category,
+                    AvailabilityStatus = car.AvailabilityStatus,
+                    BookingCount = _bookingRepository.GetByCar(car.Id).Count()
+                })
+                .ToList();
+        }
+
         private static BookingSummaryDto ToSummaryDto(Booking booking)
         {
             return new BookingSummaryDto

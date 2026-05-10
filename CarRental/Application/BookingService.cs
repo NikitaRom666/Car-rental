@@ -6,7 +6,6 @@ using CarRental.Application.Strategies;
 
 namespace CarRental.Application
 {
-    // Сервіс для бронювання авто
     public class BookingService
     {
         private readonly ICarRepository _carRepo;
@@ -32,7 +31,6 @@ namespace CarRental.Application
 
         public async System.Threading.Tasks.Task<BookingResultDto> CreateBookingAsync(BookingRequestDto? request)
         {
-            // Перевірка на null
             if (request == null)
                 return Fail("Запит не може бути порожнім");
             if (request.CarId == Guid.Empty)
@@ -42,7 +40,9 @@ namespace CarRental.Application
             if (string.IsNullOrWhiteSpace(request.CustomerName))
                 return Fail("Ім'я клієнта не задано");
 
-            // Перевірка дат (DateOnly)
+            if (!IsCustomerEligibleForBooking(request.CustomerId))
+                return Fail("Досягнута максимальна кількість активних бронювань для цього клієнта");
+
             if (request.Start == default || request.End == default)
                 return Fail("Дати не можуть бути порожніми");
             var startDate = DateOnly.FromDateTime(request.Start);
@@ -60,12 +60,10 @@ namespace CarRental.Application
             if (car.AvailabilityStatus != AvailabilityStatus.Available)
                 return Fail("Авто тимчасово недоступне");
 
-            // Перевірка перетинів
             var overlaps = await _bookingRepo.GetOverlappingAsync(request.CarId, startDate, endDate);
             if (overlaps.Any())
                 return Fail("Авто вже заброньоване на цей період");
 
-            // Створюємо бронювання
             var period = new BookingPeriod(startDate, endDate);
             var customer = new Customer(request.CustomerId, request.CustomerName);
             var strategy = _pricingStrategyFactory.GetStrategy(car.Category);
@@ -103,6 +101,19 @@ namespace CarRental.Application
                 Message = "Бронювання скасовано",
                 BookingId = booking.Id
             };
+        }
+
+        public int GetActiveBookingCountForCustomer(Guid customerId)
+        {
+            return _bookingRepo.GetAll()
+                .Count(booking => booking.Customer.Id == customerId && booking.IsActive);
+        }
+
+        public bool IsCustomerEligibleForBooking(Guid customerId)
+        {
+            const int maxActiveBookings = 3;
+            var activeCount = GetActiveBookingCountForCustomer(customerId);
+            return activeCount < maxActiveBookings;
         }
 
         private BookingResultDto Fail(string message) => new() { Success = false, Message = message };

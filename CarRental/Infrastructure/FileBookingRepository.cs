@@ -8,7 +8,6 @@ using CarRental.Domain;
 
 namespace CarRental.Infrastructure
 {
-    // Репозиторій бронювань збережений у файл (імітація)
     public class FileBookingRepository : IBookingRepository
     {
         private List<Booking> _bookings = new List<Booking>();
@@ -93,10 +92,30 @@ namespace CarRental.Infrastructure
                     .Select(group => FromStorageModel(group.First()))
                     .ToList();
             }
-            catch
+            catch (System.IO.FileNotFoundException ex)
             {
-                Trace.WriteLine($"Failed to load bookings from {_filePath}");
-                _bookings = new List<Booking>();
+                Trace.WriteLine($"Bookings file not found: {_filePath}");
+                throw new PersistenceException($"Файл бронювань не знайдено: {_filePath}", ex);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Trace.WriteLine($"Access denied to bookings file: {_filePath}");
+                throw new PersistenceException($"Нема доступу до файлу бронювань", ex);
+            }
+            catch (System.Text.Json.JsonException ex)
+            {
+                Trace.WriteLine($"Corrupted JSON in bookings file: {_filePath}");
+                throw new PersistenceException($"Коруптовані дані у файлі бронювань", ex);
+            }
+            catch (System.IO.IOException ex)
+            {
+                Trace.WriteLine($"I/O error reading bookings file: {_filePath}");
+                throw new PersistenceException($"Помилка читання файлу бронювань", ex);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Unexpected error loading bookings: {ex.Message}");
+                throw new PersistenceException($"Неочікувана помилка при завантаженні бронювань", ex);
             }
         }
 
@@ -110,9 +129,20 @@ namespace CarRental.Infrastructure
                 await using var stream = System.IO.File.Create(_filePath);
                 await System.Text.Json.JsonSerializer.SerializeAsync(stream, storage, options, cancellationToken);
             }
-            catch
+            catch (UnauthorizedAccessException ex)
             {
-                Trace.WriteLine($"Failed to save bookings to {_filePath}");
+                Trace.WriteLine($"Access denied writing to bookings file: {_filePath}");
+                throw new PersistenceException($"Нема дозволу на запис файлу бронювань", ex);
+            }
+            catch (System.IO.IOException ex)
+            {
+                Trace.WriteLine($"I/O error writing bookings file: {_filePath}");
+                throw new PersistenceException($"Помилка запису файлу бронювань", ex);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Unexpected error saving bookings: {ex.Message}");
+                throw new PersistenceException($"Неочікувана помилка при збереженні бронювань", ex);
             }
         }
 

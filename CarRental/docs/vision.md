@@ -1,29 +1,27 @@
-# Бачення
+# Car Rental System
 
-## Назва проєкту
-Car Rental
+## Problem
+Build a layered car rental application that prevents double-bookings via date-conflict detection and persists bookings to JSON.
 
-## Проблема
-Потрібен простий застосунок для бронювання автомобілів, який уміє зберігати стан, відновлювати його з файлу і не дає створити конфліктні бронювання.
+## Core Use Cases
+1. **List Available Cars** - Display cars with category, model, and availability status
+2. **Create Booking** - Validate car availability, check date overlaps, calculate pricing by category (Economy/Standard/SUV)
+3. **Cancel Booking** - Release car after cancellation, persist state to disk
 
-## Цільові користувачі
-- користувач, який хоче забронювати авто через консоль
-- студент, який показує багатошарову архітектуру на практиці
-- викладач, який перевіряє сценарії, тести і документацію
+## Functional Requirements
+- Multi-layered architecture: Domain (entities, validators) → Application (services, DTO) → Infrastructure (JSON repos)
+- Date-conflict detection: Block overlapping bookings on same vehicle
+- Pricing strategies per vehicle category using Strategy pattern
+- Async I/O for file persistence (LoadAsync/SaveAsync)
 
-## Основні сценарії використання
-1. Користувач переглядає список доступних авто.
-2. Користувач створює бронювання з перевіркою доступності та перетину дат.
-3. Користувач скасовує бронювання або шукає вже створені бронювання через меню запитів.
+## Non-Functional Requirements
+- Minimal 20 unit tests + 8 integration tests (xUnit with AAA pattern)
+- Fault-tolerance: Handle missing JSON, corrupted data, file access errors
+- Clean Code: No XML summary comments, encapsulate business logic in Domain layer
+- Persistence: All state changes written to `cars.json` and `bookings.json`
 
-## Нефункціональні вимоги
-- код має бути читабельним і розбитим на шари
-- бізнес-правила мають покриватися тестами
-- помилки з файлом або даними не повинні валити застосунок
-- систему має бути легко розширювати в наступних ітераціях
-
-## Обмеження першої ітерації
-- немає веб-інтерфейсу
-- немає авторизації
-- немає оплати й тарифних планів
-- дані зберігаються простим JSON-файлом
+## Constraints (Iteration 1)
+- Console UI only (no web/API)
+- No authentication, payment, or tiered pricing
+- Single-threaded booking flow
+- Local file storage (no database)

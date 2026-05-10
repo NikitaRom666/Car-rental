@@ -4,7 +4,6 @@ using CarRental.Domain;
 
 namespace CarRental.Domain.Validators
 {
-    // Результат валідації
     public class ValidationResult
     {
         public bool Success { get; }
@@ -18,7 +17,6 @@ namespace CarRental.Domain.Validators
         public static ValidationResult Error(string message) => new ValidationResult(false, message);
     }
 
-    // Валідація бронювання
     public static class BookingValidator
     {
         public static ValidationResult Validate(Booking booking, IEnumerable<Booking> existing)

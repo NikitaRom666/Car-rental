@@ -2,7 +2,6 @@ using System;
 
 namespace CarRental.Domain
 {
-    // Сутність клієнта
     public class Customer
     {
         public Guid Id { get; }

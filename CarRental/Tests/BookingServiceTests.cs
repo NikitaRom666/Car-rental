@@ -232,5 +232,90 @@ namespace CarRental.Tests
             bookingRepo.Verify(r => r.Update(It.IsAny<Booking>()), Times.Once);
             carRepo.Verify(r => r.Update(It.IsAny<Car>()), Times.Once);
         }
+
+        [Fact]
+        public void CreateBooking_CarNotFound_ReturnsError()
+        {
+            var carId = Guid.NewGuid();
+            var carRepo = new Mock<ICarRepository>();
+            carRepo.Setup(r => r.GetById(carId)).Returns((Car?)null);
+            var bookingRepo = new Mock<IBookingRepository>();
+            var service = new BookingService(carRepo.Object, bookingRepo.Object);
+
+            var request = new BookingRequestDto
+            {
+                CarId = carId,
+                CustomerId = Guid.NewGuid(),
+                CustomerName = "Іван Петренко",
+                Start = DateTime.Today.AddDays(1),
+                End = DateTime.Today.AddDays(3)
+            };
+
+            var result = service.CreateBooking(request);
+
+            Assert.False(result.Success);
+            Assert.Contains("не знайдено", result.Message);
+        }
+
+        [Fact]
+        public void CreateBooking_CustomerMaxActiveBookings_ReturnsError()
+        {
+            var car = new Car(Guid.NewGuid(), "Test", VehicleCategory.Economy, AvailabilityStatus.Available);
+            var customerId = Guid.NewGuid();
+            var period1 = new BookingPeriod(DateOnly.FromDateTime(DateTime.Today.AddDays(10)), DateOnly.FromDateTime(DateTime.Today.AddDays(12)));
+            var period2 = new BookingPeriod(DateOnly.FromDateTime(DateTime.Today.AddDays(13)), DateOnly.FromDateTime(DateTime.Today.AddDays(15)));
+            var period3 = new BookingPeriod(DateOnly.FromDateTime(DateTime.Today.AddDays(16)), DateOnly.FromDateTime(DateTime.Today.AddDays(18)));
+            
+            var activeBookings = new List<Booking>
+            {
+                new Booking(Guid.NewGuid(), car, new Customer(customerId, "Test"), period1, 100m, BookingStatus.Active),
+                new Booking(Guid.NewGuid(), car, new Customer(customerId, "Test"), period2, 100m, BookingStatus.Active),
+                new Booking(Guid.NewGuid(), car, new Customer(customerId, "Test"), period3, 100m, BookingStatus.Active)
+            };
+
+            var carRepo = new Mock<ICarRepository>();
+            carRepo.Setup(r => r.GetById(car.Id)).Returns(car);
+            var bookingRepo = new Mock<IBookingRepository>();
+            bookingRepo.Setup(r => r.GetAll()).Returns(activeBookings);
+            bookingRepo.Setup(r => r.GetOverlappingAsync(car.Id, It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+                .ReturnsAsync(new List<Booking>());
+            var service = new BookingService(carRepo.Object, bookingRepo.Object);
+
+            var request = new BookingRequestDto
+            {
+                CarId = car.Id,
+                CustomerId = customerId,
+                CustomerName = "Test",
+                Start = DateTime.Today.AddDays(19),
+                End = DateTime.Today.AddDays(21)
+            };
+
+            var result = service.CreateBooking(request);
+
+            Assert.False(result.Success);
+            Assert.Contains("максимальна", result.Message.ToLower());
+        }
+
+        [Fact]
+        public async Task CancelBooking_AlreadyStarted_ReturnsError()
+        {
+            var car = new Car(Guid.NewGuid(), "Test", VehicleCategory.Economy, AvailabilityStatus.Booked);
+            var booking = new Booking(
+                Guid.NewGuid(),
+                car,
+                new Customer(Guid.NewGuid(), "Іван Петренко"),
+                new BookingPeriod(DateOnly.FromDateTime(DateTime.Today.AddDays(-1)), DateOnly.FromDateTime(DateTime.Today.AddDays(2))),
+                180m);
+
+            var carRepo = new Mock<ICarRepository>();
+            var bookingRepo = new Mock<IBookingRepository>();
+            bookingRepo.Setup(r => r.GetById(booking.Id)).Returns(booking);
+            var service = new BookingService(carRepo.Object, bookingRepo.Object);
+
+            var result = await service.CancelBookingAsync(booking.Id);
+
+            Assert.False(result.Success);
+            Assert.Contains("почалося", result.Message);
+        }
     }
 }

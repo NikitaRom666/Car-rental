@@ -2,7 +2,6 @@ using System;
 
 namespace CarRental.Domain
 {
-    // Сутність бронювання
     public class Booking
     {
         public Guid Id { get; }

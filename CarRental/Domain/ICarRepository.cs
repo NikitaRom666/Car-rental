@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 namespace CarRental.Domain
 {
-    // Контракт для роботи з авто
     public interface ICarRepository
     {
         Car? GetById(Guid id);

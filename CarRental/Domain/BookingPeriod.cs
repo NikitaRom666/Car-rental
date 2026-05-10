@@ -2,7 +2,6 @@ using System;
 
 namespace CarRental.Domain
 {
-    // Період бронювання
     public class BookingPeriod
     {
         public DateOnly Start { get; }

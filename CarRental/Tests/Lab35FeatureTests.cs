@@ -121,5 +121,54 @@ namespace CarRental.Tests
             Assert.Equal(180m, result[VehicleCategory.Economy]);
             Assert.Equal(340m, result[VehicleCategory.SUV]);
         }
+
+        [Fact]
+        public void QueryService_TotalRevenueByDateRange_SumsActiveBookingPrices()
+        {
+            var car = new Car(Guid.NewGuid(), "Toyota", VehicleCategory.Economy);
+            var customer = new Customer(Guid.NewGuid(), "Іван");
+            var bookings = new List<Booking>
+            {
+                new Booking(Guid.NewGuid(), car, customer, new BookingPeriod(new DateOnly(2026, 5, 10), new DateOnly(2026, 5, 12)), 180m, BookingStatus.Active),
+                new Booking(Guid.NewGuid(), car, customer, new BookingPeriod(new DateOnly(2026, 5, 15), new DateOnly(2026, 5, 17)), 180m, BookingStatus.Active),
+                new Booking(Guid.NewGuid(), car, customer, new BookingPeriod(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 3)), 180m, BookingStatus.Cancelled)
+            };
+
+            var carRepo = new Mock<ICarRepository>();
+            var bookingRepo = new Mock<IBookingRepository>();
+            bookingRepo.Setup(r => r.GetAll()).Returns(bookings);
+
+            var service = new BookingQueryService(carRepo.Object, bookingRepo.Object);
+            var result = service.GetTotalRevenueByDateRange(new DateOnly(2026, 5, 1), new DateOnly(2026, 5, 31));
+
+            Assert.Equal(360m, result);
+        }
+
+        [Fact]
+        public void QueryService_GetCarsBookedByCategory_ReturnsUnavailableCarsOnly()
+        {
+            var car1 = new Car(Guid.NewGuid(), "Toyota Yaris", VehicleCategory.Economy, AvailabilityStatus.Unavailable);
+            var car2 = new Car(Guid.NewGuid(), "Honda Civic", VehicleCategory.Economy, AvailabilityStatus.Available);
+            var customer = new Customer(Guid.NewGuid(), "Іван");
+            var bookings = new List<Booking>
+            {
+                new Booking(Guid.NewGuid(), car1, customer, new BookingPeriod(new DateOnly(2026, 5, 10), new DateOnly(2026, 5, 12)), 180m)
+            };
+
+            var carRepo = new Mock<ICarRepository>();
+            carRepo.Setup(r => r.GetAll()).Returns(new[] { car1, car2 });
+            var bookingRepo = new Mock<IBookingRepository>();
+            bookingRepo.Setup(r => r.GetAll()).Returns(bookings);
+            bookingRepo.Setup(r => r.GetByCar(car1.Id)).Returns(new[] { bookings[0] });
+            bookingRepo.Setup(r => r.GetByCar(car2.Id)).Returns(new List<Booking>());
+
+            var service = new BookingQueryService(carRepo.Object, bookingRepo.Object);
+            var result = service.GetCarsBookedByCategory(VehicleCategory.Economy);
+
+            Assert.Single(result);
+            Assert.Equal("Toyota Yaris", result.First().Model);
+            Assert.Equal(AvailabilityStatus.Unavailable, result.First().AvailabilityStatus);
+            Assert.Equal(1, result.First().BookingCount);
+        }
     }
 }

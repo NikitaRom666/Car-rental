@@ -8,7 +8,6 @@ using CarRental.Domain;
 
 namespace CarRental.Infrastructure
 {
-    // Репозиторій авто збережений у файл (імітація)
     public class FileCarRepository : ICarRepository
     {
         private List<Car> _cars;
@@ -88,10 +87,30 @@ namespace CarRental.Infrastructure
                     .Select(group => FromStorageModel(group.First()))
                     .ToList();
             }
-            catch
+            catch (System.IO.FileNotFoundException ex)
             {
-                Trace.WriteLine($"Failed to load cars from {_filePath}");
-                _cars = new List<Car>();
+                Trace.WriteLine($"Cars file not found: {_filePath}");
+                throw new PersistenceException($"Файл автомобілів не знайдено: {_filePath}", ex);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Trace.WriteLine($"Access denied to cars file: {_filePath}");
+                throw new PersistenceException($"Нема доступу до файлу автомобілів", ex);
+            }
+            catch (System.Text.Json.JsonException ex)
+            {
+                Trace.WriteLine($"Corrupted JSON in cars file: {_filePath}");
+                throw new PersistenceException($"Коруптовані дані у файлі автомобілів", ex);
+            }
+            catch (System.IO.IOException ex)
+            {
+                Trace.WriteLine($"I/O error reading cars file: {_filePath}");
+                throw new PersistenceException($"Помилка читання файлу автомобілів", ex);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Unexpected error loading cars: {ex.Message}");
+                throw new PersistenceException($"Неочікувана помилка при завантаженні автомобілів", ex);
             }
         }
 
@@ -105,9 +124,20 @@ namespace CarRental.Infrastructure
                 await using var stream = System.IO.File.Create(_filePath);
                 await System.Text.Json.JsonSerializer.SerializeAsync(stream, storage, options, cancellationToken);
             }
-            catch
+            catch (UnauthorizedAccessException ex)
             {
-                Trace.WriteLine($"Failed to save cars to {_filePath}");
+                Trace.WriteLine($"Access denied writing to cars file: {_filePath}");
+                throw new PersistenceException($"Нема дозволу на запис файлу автомобілів", ex);
+            }
+            catch (System.IO.IOException ex)
+            {
+                Trace.WriteLine($"I/O error writing cars file: {_filePath}");
+                throw new PersistenceException($"Помилка запису файлу автомобілів", ex);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Unexpected error saving cars: {ex.Message}");
+                throw new PersistenceException($"Неочікувана помилка при збереженні автомобілів", ex);
             }
         }
 
