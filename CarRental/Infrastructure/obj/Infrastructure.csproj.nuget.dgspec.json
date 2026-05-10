@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Infrastructure\\Infrastructure.csproj": {}
+    "/home/skylevel/Car-rental/CarRental/Infrastructure/Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Domain\\Domain.csproj": {
+    "/home/skylevel/Car-rental/CarRental/Domain/Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Domain\\Domain.csproj",
+        "projectUniqueName": "/home/skylevel/Car-rental/CarRental/Domain/Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\strey\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Domain\\obj\\",
+        "projectPath": "/home/skylevel/Car-rental/CarRental/Domain/Domain.csproj",
+        "packagesPath": "/home/skylevel/.nuget/packages/",
+        "outputPath": "/home/skylevel/Car-rental/CarRental/Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\strey\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/skylevel/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,7 +37,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -53,26 +54,36 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.25, 8.0.25]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.25, 8.0.25]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.418/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.104/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Infrastructure\\Infrastructure.csproj": {
+    "/home/skylevel/Car-rental/CarRental/Infrastructure/Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "/home/skylevel/Car-rental/CarRental/Infrastructure/Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Infrastructure\\Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\strey\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Infrastructure\\obj\\",
+        "projectPath": "/home/skylevel/Car-rental/CarRental/Infrastructure/Infrastructure.csproj",
+        "packagesPath": "/home/skylevel/.nuget/packages/",
+        "outputPath": "/home/skylevel/Car-rental/CarRental/Infrastructure/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\strey\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/skylevel/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -84,8 +95,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\strey\\Desktop\\Car-rental\\CarRental\\Domain\\Domain.csproj"
+              "/home/skylevel/Car-rental/CarRental/Domain/Domain.csproj": {
+                "projectPath": "/home/skylevel/Car-rental/CarRental/Domain/Domain.csproj"
               }
             }
           }
@@ -99,7 +110,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -115,12 +127,22 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.25, 8.0.25]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.25, 8.0.25]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.418/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.104/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

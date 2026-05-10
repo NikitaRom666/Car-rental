@@ -12,6 +12,11 @@
 2. скасування бронювання
 3. пошук і перегляд активних бронювань / аналітика по авто
 
+## Аналітика (новий сценарій)
+- Сценарій: Користувач вибирає "Аналітика" в меню і бачить зведення по періодах: кількість бронювань, дохід та популярність моделей/категорій.
+- Вимоги: реалізувати через LINQ у `BookingQueryService`, повернути DTO з полями `TotalBookings`, `TotalRevenue`, `TopCars`, `TopCategories`.
+- Тестування: unit-тести на коректні агрегації та integration-тести після відновлення стану з JSON.
+
 ## Які класи і контракти змінилися
 - `BookingService`
 - `BookingQueryService`
@@ -25,6 +30,12 @@
 - `FileBookingRepository`
 - `BookingPricingStrategyFactory`
 - `BookingPricingStrategy`-класи
+
+## Явні зміни, які треба внести до репозиторію (щоб Lab35 було прозорим)
+- Додати `BookingQueryService` з методами: `GetTopCars(int n)`, `GetRevenue(DateOnly start, DateOnly end)`, `GetBookingsCount(DateOnly start, DateOnly end)`.
+- Переконатися, що `FileBookingRepository` та `FileCarRepository` реалізують асинхронні `LoadAsync`/`SaveAsync` і коректно поводяться при відсутності/пошкодженні файлу.
+- Додати DTO для аналітики та приклади виклику з `ConsoleUI`.
+- Додати тест-кейси, що перевіряють, що аналітика дає однакові результати до/після перезапуску (save/load).
 
 ## Які сценарії найризикованіші
 - пошкоджений або порожній JSON

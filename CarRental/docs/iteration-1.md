@@ -32,3 +32,12 @@
 - `IBookingRepository`
 - `Car`
 - `Booking`
+
+## Очікувані розширення (що додати у наступних ітераціях)
+- Детальні DTO для взаємодії між `ConsoleUI` та `Application` (з описом полів і валідацією)
+- Розширені сценарії аналітики (LINQ-запити) і `BookingQueryService`
+- Поліпшені репозиторії: явний `IDataStore<T>` і тестований `JsonDataStore<T>` з контрактом `SaveAsync`/`LoadAsync`
+- Додаткові Strategy для ціноутворення і фабрика стратегій (`BookingPricingStrategyFactory`)
+- Покриття тестами: принаймні 20 unit-тестів і 8 integration-тестів
+- CI: quality gate (запуск тестів з покриттям), optional analyzer/formatter step
+- Документація: приклади CLI сценаріїв, DEMO.md і фінальний self-audit
