@@ -1,36 +1,31 @@
-# Car Rental
+# Оренда автомобілів
 
-Layered C# application for booking vehicles with date-conflict detection and JSON persistence.
+Консольний застосунок на C# для бронювання авто з вбудованою перевіркою конфліктів дат та збереженням у JSON.
 
-**Run:**
-```bash
-dotnet run --project ConsoleUI/ConsoleUI.csproj
-```
+**Запуск:** `dotnet run --project ConsoleUI/ConsoleUI.csproj`
 
-**Test:**
-```bash
-dotnet test
-```
+**Тестування:** `dotnet test`
 
-## Architecture
+## Архітектура та реалізація
 
-| Layer | Purpose |
-|-------|---------|
-| **Domain** | Entities (Car, Booking, Customer), ValueObjects (BookingPeriod, VehicleCategory), Interfaces (ICarRepository, IBookingRepository), Validators |
-| **Application** | BookingService, BookingQueryService, DTOs, Strategy pattern for pricing (Economy/Standard/SUV) |
-| **Infrastructure** | FileCarRepository, FileBookingRepository (JSON persistence with async I/O) |
-| **ConsoleUI** | Menu-driven interface with error handling |
-| **Tests** | Unit tests (xUnit [Fact]) + Integration tests (file I/O, state persistence) |
+Проєкт побудовано за принципом багатошарової архітектури. Domain містить основні сутності (Car, Booking, Customer), value objects (BookingPeriod, VehicleCategory), enum-и статусів та контракти репозиторіїв. Вся валідація й бізнес-правила інкапсульовані на рівні Domain.
 
-## Key Features
+Application реалізує use cases через BookingService (створення/скасування бронювань) та BookingQueryService (LINQ-запити для аналітики). Ціноутворення здійснюється паттерном Strategy — для кожної категорії авто своя реалізація розрахунку ціни, фабрика BookingPricingStrategyFactory вибирає стратегію за категорією.
 
-- **Date Overlap Detection** - `GetOverlappingAsync()` prevents double-bookings
-- **Category-Based Pricing** - Strategy pattern: EconomyBookingPricingStrategy, StandardBookingPricingStrategy, SuvBookingPricingStrategy
-- **Async Persistence** - LoadAsync/SaveAsync for file operations
-- **Fault Tolerance** - Error handling for missing files, corrupted JSON, and I/O failures
-- **Clean Code** - No XML comments, encapsulated business rules in Domain layer
+Infrastructure містить FileCarRepository та FileBookingRepository з асинхронним I/O (LoadAsync/SaveAsync) для читання та запису JSON-файлів. Помилки файлового доступу обробляються через PersistenceException: відсутність файлу, пошкоджена JSON-структура, запобіг доступу.
 
-## Docs
+ConsoleUI — консольне меню для взаємодії з користувачем.
 
-- [Vision](docs/vision.md) | [Backlog](docs/backlog.md) | [Architecture](docs/architecture-diagram.md)  
-- [Iteration 1](docs/iteration-1.md) | [Iteration 2](docs/iteration-2.md) | [Iteration 3](docs/iteration-3.md)
+## Ключові особливості
+
+**Логіка бронювання**: Метод GetOverlappingAsync автоматично блокує подвійні бронювання на одні й ті самі дати.
+
+**Категорійні тарифи**: Economy 90/день, Standard 120/день, SUV 170/день. Розширення тарифів — додати клас стратегії та зареєструвати в фабриці.
+
+**Стійкість**: Помилки файлового I/O не валять програму, обробляються через PersistenceException з детальним повідомленням.
+
+**Якість коду**: 65+ юніт-тестів та 8+ інтеграційних тестів (xUnit). Весь функціонал покритий, код очищений від зайвих коментарів, дотримується Clean Code.
+
+## Документація
+
+Деталі по ітераціях (1-3), архітектурні діаграми та плани розвитку в папці [docs/](docs/).
