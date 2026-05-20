@@ -34,3 +34,15 @@ C:/Users/strey/Desktop/Car-rental/CarRental/Domain/obj/Debug/net8.0/ref/Domain.d
 /src/CarRental/Domain/obj/Debug/net8.0/refint/Domain.dll
 /src/CarRental/Domain/obj/Debug/net8.0/Domain.pdb
 /src/CarRental/Domain/obj/Debug/net8.0/ref/Domain.dll
+C:\Users\strey\Car-rental\CarRental\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\strey\Car-rental\CarRental\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\strey\Car-rental\CarRental\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\Domain.sourcelink.json
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\Domain.dll
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Users\strey\Car-rental\CarRental\Domain\obj\Debug\net8.0\ref\Domain.dll

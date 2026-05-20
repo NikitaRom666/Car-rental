@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xdSuV8z2L3E=",
+  "dgSpecHash": "0QGBhBZ2aJM=",
   "success": true,
-  "projectFilePath": "/home/skylevel/Car-rental/CarRental/Infrastructure/Infrastructure.csproj",
-  "expectedPackageFiles": [
-    "/home/skylevel/.nuget/packages/microsoft.netcore.app.ref/8.0.25/microsoft.netcore.app.ref.8.0.25.nupkg.sha512",
-    "/home/skylevel/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.25/microsoft.aspnetcore.app.ref.8.0.25.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\strey\\Car-rental\\CarRental\\Infrastructure\\Infrastructure.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }
