@@ -84,9 +84,7 @@ namespace CarRental.Tests
             var filePath = Path.Combine(tempDir, "cars.json");
             File.WriteAllText(filePath, "{ broken json");
 
-            var repository = new FileCarRepository(filePath);
-
-            Assert.True(repository.GetAll().Count() >= 3);
+            Assert.Throws<PersistenceException>(() => new FileCarRepository(filePath));
         }
 
         [Fact]
@@ -107,9 +105,7 @@ namespace CarRental.Tests
             var filePath = Path.Combine(tempDir, "bookings.json");
             File.WriteAllText(filePath, "not-json");
 
-            var repository = new FileBookingRepository(filePath);
-
-            Assert.Empty(repository.GetAll());
+            Assert.Throws<PersistenceException>(() => new FileBookingRepository(filePath));
         }
 
         [Fact]
